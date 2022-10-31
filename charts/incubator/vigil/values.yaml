@@ -49,4 +49,6 @@ configmap:
     # @default -- See values.yaml
     data:
       config.cfg: |
+        #
         # Config file for Vigil
+        #
