@@ -1,14 +1,13 @@
-{{/* Append the hardcoded volumes */}}
-{{- define "vigil.hardcodedValues" -}}
-persistence:
-  config:
-    enabled: true
-    type: configMap
-    name: {{ printf "%v-config" (include "common.names.fullname" .) }}
-    subPath: config.cfg
-    mountPath: /etc
-    readOnly: true
+{{/* Append the configMap volume to the volumes */}}
+{{- define "vigil.configVolume" -}}
+enabled: "true"
+mountPath: "/etc/vigil.cfg"
+subPath: "vigil.cfg"
+type: "custom"
+volumeSpec:
+  configMap:
+    name: {{ template "common.names.fullname" . }}-config
 {{- end -}}
-{{- $_ := mergeOverwrite .Values (include "vigil.hardcodedValues" . | fromYaml) -}}
+{{- $_ := set .Values.persistence "vigil-config" (include "vigil.configVolume" . | fromYaml) -}}
 
 {{ include "common.all" . }}

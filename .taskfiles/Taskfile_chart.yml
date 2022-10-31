@@ -66,12 +66,32 @@ tasks:
     silent: true
 
   # Render
+  # helm template | kubectl apply --namespace foobar -f -
+  # needs also namespace: {{ .Release.Namespace }} added in manifests in common
   template:
     desc: template your chart
     dir: "{{.GIT_ROOT}}/charts/{{.CHART_TYPE}}/{{.CHART}}"
     cmds:
     - rm -rf all-in-one.yaml
-    - helm template {{.CHART}} . > all-in-one.yaml
+    - helm template {{.CHART}} . -n {{.CHART}} > all-in-one.yaml
     deps:
     - dependency
     - check-chart
+
+  # Apply
+  template-apply:
+    desc: apply rendered chart
+    dir: "{{.GIT_ROOT}}"
+    cmds:
+    - cat {{.GIT_ROOT}}/charts/{{.CHART_TYPE}}/{{.CHART}}/all-in-one.yaml | kubectl apply --namespace {{.CHART}} -f -
+    deps:
+    - template
+
+  # Destroy
+  template-delete:
+    desc: delete rendered chart
+    dir: "{{.GIT_ROOT}}"
+    cmds:
+    - cat {{.GIT_ROOT}}/charts/{{.CHART_TYPE}}/{{.CHART}}/all-in-one.yaml | kubectl delete --namespace {{.CHART}} -f -
+    deps:
+    - template
