@@ -1,3 +1,9 @@
+# Usage #
+
+```sh
+CHART_TYPE="incubator" CHART="vigil" task chart:create
+```
+
 # ⚠️ Deprecation and Archive Notice
 
 **This repo is being deprecated, please read [this issue](https://github.com/k8s-at-home/charts/issues/1761)**

@@ -33,7 +33,7 @@ tasks:
     cmds:
     - echo "Installing go-replace"
     - mkdir -p ".bin"
-    - wget -q "https://github.com/webdevops/go-replace/releases/download/1.1.2/gr-64-osx" -O .bin/go-replace && chmod +x .bin/go-replace
+    - wget -q "https://github.com/webdevops/go-replace/releases/download/22.10.0/go-replace.darwin.amd64" -O .bin/go-replace && chmod +x .bin/go-replace
     status:
     - test -e .bin/go-replace
     deps:
