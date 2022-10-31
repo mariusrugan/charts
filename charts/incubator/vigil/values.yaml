@@ -50,5 +50,74 @@ configmap:
     data:
       config.cfg: |
         #
-        # Config file for Vigil
+        # Vigil
         #
+
+        [server]
+
+        log_level = "info"
+        inet = "0.0.0.0:8080"
+        workers = 1
+
+        manager_token = "REPLACE_THIS_WITH_A_VERY_SECRET_KEY"
+        reporter_token = "REPLACE_THIS_WITH_A_SECRET_KEY"
+
+        [assets]
+
+        path = "./res/assets/"
+
+        [branding]
+
+        page_title = "example.com status"
+        page_url = "https://status.example.com/"
+        company_name = "---"
+        icon_color = "#FF0000"
+        icon_url = "https://upload.wikimedia.org/wikipedia/commons/1/1d/No_image.svg"
+        logo_color = "#FF0000"
+        logo_url = "https://upload.wikimedia.org/wikipedia/commons/1/1d/No_image.svg"
+        website_url = "https://status.example.com/"
+        support_url = "mailto:noreply@example.com"
+        custom_html = ""
+
+        [metrics]
+
+        poll_interval = 120
+        poll_retry = 2
+
+        poll_http_status_healthy_above = 200
+        poll_http_status_healthy_below = 400
+
+        poll_delay_dead = 10
+        poll_delay_sick = 5
+
+        poll_parallelism = 4
+
+        push_delay_dead = 20
+
+        push_system_cpu_sick_above = 0.90
+        push_system_ram_sick_above = 0.90
+
+        script_interval = 300
+
+        script_parallelism = 2
+
+        local_delay_dead = 40
+
+        [probe]
+
+        [[probe.service]]
+
+        id = "web"
+        label = "Web nodes"
+
+        [[probe.service.node]]
+
+        id = "load-balancer"
+        label = "Core main load balancer"
+        mode = "poll"
+
+        replicas = [
+          "tcp://google.com:443",
+          "tcp://google.com:80",
+          "icmp://1.1.1.1"
+        ]

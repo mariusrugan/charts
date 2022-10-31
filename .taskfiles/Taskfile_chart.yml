@@ -64,3 +64,14 @@ tasks:
     - test ! -z "{{.CHART_TYPE}}" || (echo "Please define CHART_TYPE parameter"; exit 1)
     - test ! -z "{{.CHART}}" || (echo "Please define CHART parameter"; exit 1)
     silent: true
+
+  # Render
+  template:
+    desc: template your chart
+    dir: "{{.GIT_ROOT}}/charts/{{.CHART_TYPE}}/{{.CHART}}"
+    cmds:
+    - rm -rf all-in-one.yaml
+    - helm template {{.CHART}} . > all-in-one.yaml
+    deps:
+    - dependency
+    - check-chart
