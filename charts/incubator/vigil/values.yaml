@@ -40,3 +40,13 @@ persistence: {}
   # data:
   #   enabled: false
   #   mountPath: /data
+
+configmap:
+  config:
+    # -- Define inline vigil configuration as a ConfigMap.
+    enabled: true
+    # -- vigil configuration. See [image documentation](https://github.com/tomsquest/docker-radicale#custom-configuration) for more information.
+    # @default -- See values.yaml
+    data:
+      config.cfg: |
+        # Config file for Vigil
