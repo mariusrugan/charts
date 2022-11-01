@@ -1,0 +1,13 @@
+{{/* Append the configMap volume to the volumes */}}
+{{- define "vigil.configVolume" -}}
+enabled: "true"
+mountPath: "/etc/vigil.cfg"
+subPath: "vigil.cfg"
+type: "custom"
+volumeSpec:
+  configMap:
+    name: {{ template "common.names.fullname" . }}-config
+{{- end -}}
+{{- $_ := set .Values.persistence "vigil-config" (include "vigil.configVolume" . | fromYaml) -}}
+
+{{ include "common.all" . }}

@@ -15,3 +15,6 @@ charts/**/charts
 .envrc
 Gemfile.lock
 angel.yaml
+
+# Helm template
+all-in-one.yaml

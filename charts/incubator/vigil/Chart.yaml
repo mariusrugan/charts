@@ -1,0 +1,24 @@
+---
+apiVersion: v2
+appVersion: 1.0.0
+description: vigil helm package
+name: vigil
+version: 1.0.0
+kubeVersion: ">=1.16.0-0"
+keywords:
+  - vigil
+home: https://github.com/mariusrugan/charts/tree/master/charts/stable/vigil
+icon: https://vigil.org/icon
+sources:
+  - https://github.com/vigil/vigil-docker
+maintainers:
+  - name: nobody
+    email: noreply@acme.org
+dependencies:
+  - name: common
+    repository: https://library-charts.k8s-at-home.com
+    version: 4.5.2
+annotations:
+  artifacthub.io/changes: |
+    - kind: added
+      description: Initial version

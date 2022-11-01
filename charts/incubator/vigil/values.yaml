@@ -1,0 +1,177 @@
+#
+# IMPORTANT NOTE
+#
+# This chart inherits from our common library chart. You can check the default values/options here:
+# https://github.com/k8s-at-home/library-charts/tree/main/charts/stable/common/values.yaml
+#
+
+image:
+  # -- image repository
+  repository: valeriansaliou/vigil
+  # -- image tag
+  # @default -- chart.appVersion
+  tag: v1.24.3
+  # -- image pull policy
+  pullPolicy: IfNotPresent
+
+# -- environment variables. See more environment variables in the [vigil documentation](https://vigil.org/docs).
+# @default -- See below
+env:
+  # -- Set the container timezone
+  TZ: Europe/Amsterdam
+
+# -- Configures service settings for the chart.
+# @default -- See values.yaml
+service:
+  main:
+    ports:
+      http:
+        port: 8080
+
+ingress:
+  # -- Enable and configure ingress settings for the chart under this key.
+  # @default -- See values.yaml
+  main:
+    enabled: false
+
+# -- Configure persistence settings for the chart under this key.
+# @default -- See values.yaml
+persistence: {}
+
+configmap:
+  config:
+    # -- Define inline vigil configuration as a ConfigMap.
+    enabled: true
+    # -- vigil configuration. See [image documentation](https://github.com/tomsquest/docker-radicale#custom-configuration) for more information.
+    # @default -- See values.yaml
+    mountPath: /etc
+    data:
+      vigil.cfg: |
+        [server]
+        log_level = "info"
+        inet = "0.0.0.0:8080"
+        workers = 2
+        manager_token = "REPLACE_THIS_WITH_A_VERY_SECRET_KEY"
+        reporter_token = "REPLACE_THIS_WITH_A_SECRET_KEY"
+
+        [assets]
+        path = "./res/assets/"
+
+        [branding]
+        page_title = "Crisp Status"
+        page_url = "https://status.crisp.chat/"
+        company_name = "Crisp IM SAS"
+        icon_color = "#1972F5"
+        icon_url = "https://valeriansaliou.github.io/vigil/images/crisp-icon.png"
+        logo_color = "#1972F5"
+        logo_url = "https://valeriansaliou.github.io/vigil/images/crisp-logo.svg"
+        website_url = "https://crisp.chat/"
+        support_url = "mailto:support@crisp.chat"
+        custom_html = ""
+
+        [notify]
+        startup_notification = true
+        reminder_interval = 300
+        reminder_backoff_function = "linear"
+        reminder_backoff_limit = 3
+
+        [notify.pushover]
+        app_token = ""
+        user_keys = []
+
+        [metrics]
+        poll_interval = 120
+        poll_retry = 2
+        poll_http_status_healthy_above = 200
+        poll_http_status_healthy_below = 400
+        poll_delay_dead = 10
+        poll_delay_sick = 5
+        poll_parallelism = 4
+        push_delay_dead = 20
+        push_system_cpu_sick_above = 0.90
+        push_system_ram_sick_above = 0.90
+        script_interval = 300
+        script_parallelism = 2
+        local_delay_dead = 40
+
+        [probe]
+
+        [[probe.service]]
+
+        id = "web"
+        label = "Web nodes"
+
+        [[probe.service.node]]
+
+        id = "router"
+        label = "Core main router"
+        mode = "poll"
+
+        replicas = [
+          "icmp://1.1.1.1",
+          "icmp://1.0.0.1"
+        ]
+
+        [[probe.service.node]]
+
+        id = "load-balancer"
+        label = "Core main load balancer"
+        mode = "poll"
+
+        replicas = [
+          "tcp://1.1.1.1:80",
+          "tcp://1.0.0.1:80"
+        ]
+
+        [[probe.service.node]]
+
+        id = "help"
+        label = "Core help load balancer"
+        mode = "poll"
+        replicas = ["tcp://1.1.1.1:80"]
+
+        [[probe.service.node]]
+
+        id = "api"
+        label = "Access to API service"
+        mode = "poll"
+        replicas = ["https://api.crisp.chat/v1/_system/health"]
+
+        [[probe.service.node]]
+
+        id = "status"
+        label = "Access to status page"
+        mode = "poll"
+        replicas = ["https://status.crisp.chat/robots.txt"]
+        http_body_healthy_match = "User-agent:.*"
+
+        [[probe.service]]
+
+        id = "relay"
+        label = "Relay nodes"
+
+        [[probe.service.node]]
+
+        id = "socket-client"
+        label = "Visitor realtime sockets"
+        mode = "push"
+        rabbitmq_queue = "client"
+        rabbitmq_queue_nack_healthy_below = 100
+        rabbitmq_queue_nack_dead_above = 1000
+
+        [[probe.service]]
+
+        id = "internal"
+        label = "Internal nodes"
+
+        [[probe.service.node]]
+
+        id = "gateway"
+        label = "Private gateway"
+        mode = "local"
+
+        [[probe.service.node]]
+
+        id = "capacity"
+        label = "Network capacity"
+        mode = "local"
