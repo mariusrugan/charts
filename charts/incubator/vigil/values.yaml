@@ -18,7 +18,7 @@ image:
 # @default -- See below
 env:
   # -- Set the container timezone
-  TZ: UTC
+  TZ: Europe/Amsterdam
 
 # -- Configures service settings for the chart.
 # @default -- See values.yaml
@@ -37,9 +37,6 @@ ingress:
 # -- Configure persistence settings for the chart under this key.
 # @default -- See values.yaml
 persistence: {}
-  # data:
-  #   enabled: false
-  #   mountPath: /data
 
 configmap:
   config:
@@ -53,23 +50,34 @@ configmap:
         [server]
         log_level = "info"
         inet = "0.0.0.0:8080"
-        workers = 1
+        workers = 2
         manager_token = "REPLACE_THIS_WITH_A_VERY_SECRET_KEY"
         reporter_token = "REPLACE_THIS_WITH_A_SECRET_KEY"
 
         [assets]
         path = "./res/assets/"
+
         [branding]
-        page_title = "example.com status"
-        page_url = "https://status.example.com/"
-        company_name = "---"
-        icon_color = "#FF0000"
-        icon_url = "https://upload.wikimedia.org/wikipedia/commons/1/1d/No_image.svg"
-        logo_color = "#FF0000"
-        logo_url = "https://upload.wikimedia.org/wikipedia/commons/1/1d/No_image.svg"
-        website_url = "https://status.example.com/"
-        support_url = "mailto:noreply@example.com"
+        page_title = "Crisp Status"
+        page_url = "https://status.crisp.chat/"
+        company_name = "Crisp IM SAS"
+        icon_color = "#1972F5"
+        icon_url = "https://valeriansaliou.github.io/vigil/images/crisp-icon.png"
+        logo_color = "#1972F5"
+        logo_url = "https://valeriansaliou.github.io/vigil/images/crisp-logo.svg"
+        website_url = "https://crisp.chat/"
+        support_url = "mailto:support@crisp.chat"
         custom_html = ""
+
+        [notify]
+        startup_notification = true
+        reminder_interval = 300
+        reminder_backoff_function = "linear"
+        reminder_backoff_limit = 3
+
+        [notify.pushover]
+        app_token = ""
+        user_keys = []
 
         [metrics]
         poll_interval = 120
@@ -87,15 +95,83 @@ configmap:
         local_delay_dead = 40
 
         [probe]
+
         [[probe.service]]
+
         id = "web"
         label = "Web nodes"
+
         [[probe.service.node]]
+
+        id = "router"
+        label = "Core main router"
+        mode = "poll"
+
+        replicas = [
+          "icmp://1.1.1.1",
+          "icmp://1.0.0.1"
+        ]
+
+        [[probe.service.node]]
+
         id = "load-balancer"
         label = "Core main load balancer"
         mode = "poll"
+
         replicas = [
-          "tcp://google.com:443",
-          "tcp://google.com:80",
-          "icmp://1.1.1.1"
+          "tcp://1.1.1.1:80",
+          "tcp://1.0.0.1:80"
         ]
+
+        [[probe.service.node]]
+
+        id = "help"
+        label = "Core help load balancer"
+        mode = "poll"
+        replicas = ["tcp://1.1.1.1:80"]
+
+        [[probe.service.node]]
+
+        id = "api"
+        label = "Access to API service"
+        mode = "poll"
+        replicas = ["https://api.crisp.chat/v1/_system/health"]
+
+        [[probe.service.node]]
+
+        id = "status"
+        label = "Access to status page"
+        mode = "poll"
+        replicas = ["https://status.crisp.chat/robots.txt"]
+        http_body_healthy_match = "User-agent:.*"
+
+        [[probe.service]]
+
+        id = "relay"
+        label = "Relay nodes"
+
+        [[probe.service.node]]
+
+        id = "socket-client"
+        label = "Visitor realtime sockets"
+        mode = "push"
+        rabbitmq_queue = "client"
+        rabbitmq_queue_nack_healthy_below = 100
+        rabbitmq_queue_nack_dead_above = 1000
+
+        [[probe.service]]
+
+        id = "internal"
+        label = "Internal nodes"
+
+        [[probe.service.node]]
+
+        id = "gateway"
+        label = "Private gateway"
+        mode = "local"
+
+        [[probe.service.node]]
+
+        id = "capacity"
+        label = "Network capacity"
+        mode = "local"
