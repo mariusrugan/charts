@@ -1,9 +1,17 @@
 # Usage #
   
+Creation from templates:
 ```sh
-CHART_TYPE="incubator" CHART="vigil" task chart:create
+CHART_TYPE="incubator" CHART="chart-name" task chart:create
 ```
   
+Developing stage:  
+```sh
+CHART_TYPE="incubator" CHART="chart-name" task chart:template
+CHART_TYPE="incubator" CHART="chart-name" task chart:template-apply
+CHART_TYPE="incubator" CHART="chart-name" task chart:template-delete
+```
+
 # Helm charts
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-67-orange.svg?style=flat-square)](#contributors-)
