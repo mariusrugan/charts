@@ -10,6 +10,10 @@ on:
     paths:
       - "charts/**"
 
+env:
+  HELM_VERSION: 3.9.2
+  YQ_VERSION: 4.16.2
+
 jobs:
   release:
     runs-on: ubuntu-20.04
@@ -31,10 +35,10 @@ jobs:
         uses: yokawasa/action-setup-kube-tools@v0.8.2
         with:
           setup-tools: |
-            helmv3
+            helm
             yq
-          helm: "3.8.0"
-          yq: "4.16.2"
+          helm: "${{ env.HELM_VERSION }}"
+          yq: "${{ env.YQ_VERSION }}"
 
       - name: Install helm-docs
         run: |
@@ -119,9 +123,13 @@ jobs:
           fetch-depth: 0
 
       - name: Install yq
-        uses: chrisdickinson/setup-yq@latest
+        uses: yokawasa/action-setup-kube-tools@v0.8.2
         with:
-          yq-version: v4.9.3
+          setup-tools: |
+            helm
+            yq
+          helm: "${{ env.HELM_VERSION }}"
+          yq: "${{ env.YQ_VERSION }}"
 
       - name: Run script
         run: |
