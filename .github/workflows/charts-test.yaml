@@ -10,6 +10,13 @@ on:
         required: true
         type: string
 
+env:
+  HELM_VERSION: 3.9.2
+  RUBY_VERSION: 2.7
+  PYTHON_VERSION: 3.10
+  K3D_VERSION: 1.24
+
+
 jobs:
   unit-test:
     name: Run unit tests
@@ -25,13 +32,13 @@ jobs:
         uses: yokawasa/action-setup-kube-tools@v0.8.2
         with:
           setup-tools: |
-            helmv3
-          helm: "3.8.0"
+            helmv
+          helm: "${{ env.HELM_VERSION }}"
 
       - name: Install Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 2.7
+          ruby-version: "${{ env.RUBY_VERSION }}"
 
       - name: Install dependencies
         env:
@@ -97,12 +104,12 @@ jobs:
         uses: yokawasa/action-setup-kube-tools@v0.8.2
         with:
           setup-tools: |
-            helmv3
-          helm: "3.6.3"
+            helm
+          helm: "${{ env.HELM_VERSION }}"
 
       - uses: actions/setup-python@v4
         with:
-          python-version: "3.10"
+          python-version: "${{ env.PYTHON_VERSION }}"
 
       - name: Set up chart-testing
         uses: helm/chart-testing-action@v2.3.0
@@ -110,7 +117,7 @@ jobs:
       - name: Create k3d cluster
         uses: nolar/setup-k3d-k3s@v1
         with:
-          version: v1.19
+          version: "${{ env.K3D_VERSION }}"
 
       - name: Remove node taints
         run: |

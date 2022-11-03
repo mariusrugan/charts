@@ -10,6 +10,11 @@ on:
         required: true
         type: string
 
+env:
+  HELM_VERSION: 3.9.2
+  YQ_VERSION: 4.16.2
+  PYTHON_VERSION: 3.10
+
 jobs:
   lint:
     name: Lint charts
@@ -25,12 +30,14 @@ jobs:
         uses: yokawasa/action-setup-kube-tools@v0.8.2
         with:
           setup-tools: |
-            helmv3
-          helm: "3.8.0"
+            helm
+            yq
+          helm: "${{ env.HELM_VERSION }}"
+          yq: "${{ env.YQ_VERSION }}"
 
       - uses: actions/setup-python@v4
         with:
-          python-version: "3.10"
+          python-version: "${{ env.PYTHON_VERSION }}"
 
       - name: Set up chart-testing
         uses: helm/chart-testing-action@v2.3.0
