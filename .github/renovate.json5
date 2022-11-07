@@ -1,11 +1,13 @@
 {
   "enabled": true,
+  "semanticCommits": "enabled",
   "dependencyDashboard": true,
   "dependencyDashboardTitle": "Renovate Dashboard",
   "assigneesFromCodeOwners": true,
   "reviewersFromCodeOwners": true,
   "suppressNotifications": ["prIgnoreNotification"],
   "prConcurrentLimit": 5,
+  "rebaseWhen": "conflicted",
   "helm-values": {
     "enabled": false
   },
