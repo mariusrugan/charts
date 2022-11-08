@@ -8,6 +8,12 @@
   "suppressNotifications": ["prIgnoreNotification"],
   "prConcurrentLimit": 5,
   "rebaseWhen": "conflicted",
+  "repositories": [
+    "mariusrugan/charts"
+  ],
+  "includeForks": true,
+  "platform": "github",
+  "onboarding": false,
   "helm-values": {
     "enabled": false
   },
