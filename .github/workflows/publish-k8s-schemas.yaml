@@ -4,7 +4,7 @@ name: "Publish k8s Schemas"
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 0 * * *"
+    - cron: "* * * * *"
   push:
     branches: ["master"]
     paths: [".github/workflows/publish-k8s-schemas.yaml"]
