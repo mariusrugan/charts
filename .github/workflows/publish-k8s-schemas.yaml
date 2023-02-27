@@ -6,7 +6,7 @@ on:
   schedule:
     - cron: "0 0 * * *"
   push:
-    branches: ["main"]
+    branches: ["master"]
     paths: [".github/workflows/publish-k8s-schemas.yaml"]
 
 env:
@@ -74,7 +74,7 @@ jobs:
           flux push artifact oci://ghcr.io/mariusrugan/k8s-schemas-oci:latest \
               --path="/home/runner/.datree/crdSchemas" \
               --source="${{ github.repositoryUrl }}" \
-              --revision="main"
+              --revision="master"
 
       - name: Write nginx-unprivileged Dockerfile
         run: |
