@@ -15,7 +15,7 @@ env:
 jobs:
   publish-k8s-schemas:
     name: Publish k8s Schemas
-    runs-on: ["self-hosted"]
+    runs-on: "ubuntu-latest"
     steps:
       - name: Setup Kube Tools
         uses: yokawasa/action-setup-kube-tools@af4ebb1af1efd30c5bd84a2e9773355ad6362a33 # v0.9.3
